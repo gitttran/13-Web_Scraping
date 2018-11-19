@@ -1,17 +1,14 @@
+import splinter
+import bs4
 from bs4 import BeautifulSoup as bs
 from splinter import Browser
 import requests
 import pandas as pd
 
-def init_browser():
+def scrape():
     # @NOTE: Replace the path with your actual path to the chromedriver
     executable_path = {"executable_path": "chromedriver"}
-    return Browser("chrome", **executable_path, headless=False)
-
-def scrape():
-
-    # Initialize browser
-    browser = init_browser()
+    browser = Browser("chrome", **executable_path, headless=True)
 
     # Visit the Costa Rica climate site
     url = 'https://mars.nasa.gov/news/?page=0&per_page=40&order=publish_date+desc%2Ccreated_at+desc&search=&category=19%2C165%2C184%2C204&blank_scope=Latest'
@@ -23,6 +20,7 @@ def scrape():
 
     articles = soup.find_all('li', class_='slide')
     title = articles[0].find('div',class_="content_title").find('a').text
+
     teaser = articles[0].find('div',class_="article_teaser_body").text
 
     image_page='https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
@@ -59,25 +57,30 @@ def scrape():
     tables = pd.read_html(facts_page)
 
 
-    # Scrape hemisphere page into soup
+        # Scrape hemisphere page into soup
     hemi_page='https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
-    browser.visit(hemi_page)
 
-    html = browser.html
-    soup = bs(html, 'html.parser')
+    links=[]
+    for hemi in range(4):
+        browser.visit(hemi_page)
+        hemi_list=browser.find_link_by_partial_text('Enhanced')
+        current_link= hemi_list[hemi]['href']
+        browser.visit(current_link)
+        html = browser.html
+        soup = bs(html,'html.parser')
+        result = soup.find('a',text='Sample')
+        hemi_string = soup.find('h2').text
+        links.append(result.attrs['href'])
 
-    valles_img_url= 'https://www.jpl.nasa.gov' + img_url
-    cerberus_img_url= 'https://www.jpl.nasa.gov' + img_url
-    schiaparelli_img_url= 'https://www.jpl.nasa.gov' + img_url
-    syrtis_major_img_url= 'https://www.jpl.nasa.gov' + img_url
-
-    hemisphere_image_urls = [
-    {"title": "Valles Marineris Hemisphere", "img_url": "..."},
-    {"title": "Cerberus Hemisphere", "img_url": "..."},
-    {"title": "Schiaparelli Hemisphere", "img_url": "..."},
-    {"title": "Syrtis Major Hemisphere", "img_url": "..."},
-]
+    # hemisphere_image_urls = [
+    #     {"title": "Valles Marineris Hemisphere", "img_url": links[3]},
+    #     {"title": "Cerberus Hemisphere", "img_url": links[0]},
+    #     {"title": "Schiaparelli Hemisphere", "img_url": links[2]},
+    #     {"title": "Syrtis Major Hemisphere", "img_url":links[1]},
+    # ]
 
 
-    # Return results
-    return weather
+    outputs = {'title':title, 'teaser':teaser, 'featured_image_url':featured_image_url,
+                  'mars_weather':mars_weather,'tables':tables}
+
+    return outputs
