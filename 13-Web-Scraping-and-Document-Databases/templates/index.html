@@ -32,11 +32,34 @@
       <img src="{{mars_db['featured_image_url']}}" class="featured">
     </div>
     <div class="col-md-4">
-      <div class="card-title">Current Weather on Mars</div>
-        <p class="card-text">{{mars_db['mars_weather']}}</p>
-      </div>
+      <div><h3>Current Weather on Mars</h3></div>
+        <p>{{mars_db['mars_weather']}}</p>
+
+        <div><h3>Mars Facts</h3></div>
+        <table>{{mars_db['mars_facts']}}</table>
     </div>
     <br/>
+    <br/>
+
+
+    <div class="container">
+      <div class="row">
+        <h1>Mars Hemisphere</h1>
+
+        {% for image in mars_data.mars_hemispheres %}
+
+        <div>
+          <img src={{image.img_url}} alt="Mars Hemisphere Image" width=450>
+            <div>
+              <h2>{{image.title}}</h2>
+            </div>
+        </div>
+
+        {% endfor %}
+
+      </div>
+    </div>
+
 
 </body>
 </html>
