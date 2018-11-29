@@ -72,12 +72,12 @@ def scrape():
         hemi_string = soup.find('h2').text
         links.append(result.attrs['href'])
 
-    # hemisphere_image_urls = [
-    #     {"title": "Valles Marineris Hemisphere", "img_url": links[3]},
-    #     {"title": "Cerberus Hemisphere", "img_url": links[0]},
-    #     {"title": "Schiaparelli Hemisphere", "img_url": links[2]},
-    #     {"title": "Syrtis Major Hemisphere", "img_url":links[1]},
-    # ]
+     mars_hemispheres = [
+         {"title": "Valles Marineris Hemisphere", "img_url": links[3]},
+         {"title": "Cerberus Hemisphere", "img_url": links[0]},
+         {"title": "Schiaparelli Hemisphere", "img_url": links[2]},
+         {"title": "Syrtis Major Hemisphere", "img_url":links[1]},
+     ]
 
 
     outputs = {'title':title, 'teaser':teaser, 'featured_image_url':featured_image_url,
